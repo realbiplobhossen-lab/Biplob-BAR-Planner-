@@ -8,6 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # এখানে env সেকশনটি যোগ করা হয়েছে ওয়ার্নিং দূর করার জন্য
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -26,22 +30,28 @@ jobs:
       - name: Install Capacitor
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
+          
       - name: Initialize Capacitor
         run: |
           npx cap init "My HTML App" "com.example.htmlapp" --web-dir=.
+          
       - name: Add Android Platform
         run: |
           npx cap add android
+          
       - name: Sync Files
         run: |
           npx cap sync android
+          
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
